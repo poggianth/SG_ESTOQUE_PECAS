@@ -1,46 +1,65 @@
 import os
 import time
+from view.splash_screen import SplashScreen
 from view import menu
-from model.produto import Produto
-from model.estoque import Estoque
-from model.item_estoque import ItemEstoque
+from reports.relatorios import Relatorio
 from controller.controller_produto import controller_produto
 
 
+tela_inicial = SplashScreen()
+relatorio = Relatorio()
+
+
+def reports(opcao_relatorio):
+    
+    if opcao_relatorio == 1:
+        relatorio.get_produto_todos_produtos()
+    elif opcao_relatorio == 2:
+        relatorio.get_produto_valor_total()
+    elif opcao_relatorio == 3:
+        relatorio.get_produto_produtos_reposicao()
+    elif opcao_relatorio == 4:
+        relatorio.get_estoque_todos_estoques()
+    elif opcao_relatorio == 5:
+        relatorio.get_estoque_produto_em_estoque_especifico()
+    elif opcao_relatorio == 6:
+        relatorio.get_item__todos_itens()
+    elif opcao_relatorio == 7:
+        relatorio.get_item_localizacao_produto_especifico()
+    else:
+        print("[ERRO] - Opção inválida!")
+
 # Main
 def run():
+    print(tela_inicial.get_updated_screen())
+    menu.clear_console()
 
     while True:
         try:
-                
-            time.sleep(2)
-            # os.system('cls')
-            menu.mostra_opcoes()
-            
+            print(menu.menu_principal())
             opcao = int(input("Informe a sua opção: "))
+            menu.clear_console(1)
         
-            if opcao == 1:
-                print("Listar todos os produtos!")
-                produtos = controller_produto.lista_produtos()
-                for prod in produtos:
-                    print(f"{prod}")
+            if opcao == 1: # Relatórios
+                print(menu.relatorios())
+                opcao_relatorio = int(input("Informe o relatório desejado: "))
+                
+                reports(opcao_relatorio)
             
-            elif opcao == 2:
-                print("Listar um único produto!")
-                id_buscar = int(input("Informe o id do produto que deseja buscar: "))
-                print(controller_produto.lista_unico_produto(id_buscar))
+            elif opcao == 2: # Inserir Novos Registros
+                print(menu.menu_entidades())
 
-            elif opcao == 3:
-                print("Escolheu a opção 3")
-            elif opcao == 4:
+            elif opcao == 3: # Atualizar Registros
+                print(menu.menu_entidades())
+
+            elif opcao == 4: # Excluir
                 print("Escolheu a opção 4")
-            elif opcao == 5:
-                print("Escolheu a opção 5")
-            elif opcao == 6:
-                print("Escolheu a opção 6")
+
             elif opcao == 0:
                 print("Saindo...")
                 print("Agradecemos por utilizar o nosso sistema!")
+                exit(0)
+
             else:
                 print("[Erro] - Opção inválida! Tente novamente")
         except Exception as error:

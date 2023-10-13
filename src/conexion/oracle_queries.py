@@ -6,13 +6,16 @@ class OracleQueries:
 
     def __init__(self, can_write:bool=False):
         self.can_write = can_write
-        self.host = "localhost"
+        self.host = "127.0.0.1"
         self.port = 1521
         self.service_name = 'SG_ESTOQUE_PECAS'
         self.sid = 'xe'
+        self.cur = None
+        self.user = "SYSTEM"
+        self.passwd = "123456"
 
-        with open("conexion/passphrase/authentication.oracle", "r") as f:
-            self.user, self.passwd = f.read().split(',')            
+        # with open("/src/conexion/passphrase/authentication.oracle", "r") as f:
+        #     self.user, self.passwd = f.read().split(',')            
 
     def __del__(self):
         if self.cur:

@@ -1,0 +1,1 @@
+select * from produto where quantidade <= quantidade_reposicao
