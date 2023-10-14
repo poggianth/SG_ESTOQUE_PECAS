@@ -1,74 +1,117 @@
-import cx_Oracle
+from conexion.oracle_queries import OracleQueries
 from model.produto import Produto
+from reports import relatorios
 
-class controller_produto:
+relatorio_produto = relatorios.Relatorio()
 
 
-    def recebe_dados_produto():
+class Controller_Produto:
+
+    def recebe_dados_produto(self):
         produto = Produto()
-        
+
         produto.nome = input("Informe o nome: ")
         produto.descricao = input("Informe a descrição: ")
-        produto.quantidade = int(input("Informe a quantidade (número inteiro): "))
+        produto.quantidade = int(
+            input("Informe a quantidade (número inteiro): "))
         produto.categoria = input("Informe a categoria: ")
-        produto.preco_unitario = float(input("Informe o preço unitário (número decimal): "))
-        produto.quantidade_reposicao = int(input("Informe a quantidade de reposição (número inteiro): "))
+        produto.preco_unitario = float(
+            input("Informe o preço unitário (número decimal): "))
+        produto.quantidade_reposicao = int(
+            input("Informe a quantidade de reposição (número inteiro): "))
 
         return produto
-    
-    def lista_produtos():
+
+    def existe_produto(self, oracle: OracleQueries, id_produto: int):
+        result = oracle.sqlToDataFrame(
+            f"select id, nome from produto where id={id_produto}")
+        return not result.empty
+
+    def inserir_produto(self) -> bool:
+        # produto = self.recebe_dados_produto()
+
+        novo_produto = {
+            'nome': input("Informe o nome: "),
+            'descricao': input("Informe a descrição: "),
+            'quantidade': int(input("Informe a quantidade (número inteiro): ")),
+            'categoria': input("Informe a categoria: "),
+            'preco_unitario': float(input("Informe o preço unitário (número decimal): ")),
+            'quantidade_reposicao': int(input("Informe a quantidade de reposição (número inteiro): "))
+        }
+
         try:
-            connection = cx_Oracle.connect("SYSTEM/123456@127.0.0.1:1521/xe")
-            cursor = connection.cursor() 
-            cursor.execute('select * from produto')
+            oracle = OracleQueries()
+            cursor = oracle.connect()
 
-            res = cursor.fetchall()
+            cursor.execute(
+                """
+                INSERT INTO produto (nome, descricao, quantidade, categoria, preco_unitario, quantidade_reposicao) VALUES (:nome, :descricao, :quantidade, :categoria, :preco_unitario, :quantidade_reposicao)
+                """, novo_produto
+            )
 
-            cursor.close()  
-            connection.close()
+            oracle.conn.commit()
 
-            return res
+            print("\nProduto inserido com sucesso!")
 
         except Exception as error:
-            print(f"[OPS] - Erro ao listar produto: {error}")
-    
-    def lista_unico_produto(id: int) -> Produto:
+            print(f"Erro ao inserir produto: {error}")
+
+    def alterar_produto(self):
+        # Mostra os produtos cadastrados para guiar o usuário
+        relatorio_produto.get_produto_todos_produtos()
+
+        id_produto = int(
+            input("\nInforme o código(id) do produto que irá ALTERAR: "))
+
         try:
-            connection = cx_Oracle.connect("SYSTEM/123456@127.0.0.1:1521/xe")
-            cursor = connection.cursor() 
+            oracle = OracleQueries(can_write=True)
+            oracle.connect()
 
-            cursor.prepare('select * from produto where id = :id') 
-            cursor.execute(None, {'id': id})
+            if self.existe_produto(oracle, id_produto):
+                # Produto existe
+                nome = input("Informe o nome: ")
+                descricao = input("Informe a descrição: ")
+                quantidade = int(
+                    input("Informe a quantidade (número inteiro): "))
+                categoria = input("Informe a categoria: ")
+                preco_unitario = float(
+                    input("Informe o preço unitário (número decimal): "))
+                quantidade_reposicao = int(
+                    input("Informe a quantidade de reposição (número inteiro): "))
 
-            res = cursor.fetchall()
-            
-            cursor.close()  
-            connection.close()
+                oracle.write(
+                    f"""
+                        UPDATE PRODUTO SET nome = '{nome}', descricao = '{descricao}', quantidade = {quantidade}, categoria = '{categoria}', preco_unitario = {preco_unitario}, quantidade_reposicao = {quantidade_reposicao} WHERE id = {id_produto}
+                    """
+                )
 
-            return res
+                print("Produto alterado com sucesso!")
+
+            else:
+                print(f"Não existe nenhum produto com o código(id): {
+                      id_produto}")
 
         except Exception as error:
-            print(f"[OPS] - Erro ao listar produto: {error}")
+            print(f"Erro ao atualizar produto: {error}")
 
+    def excluir_produto(self):
+        # Mostra os produtos cadastrados para guiar o usuário
+        relatorio_produto.get_produto_todos_produtos()
 
-    # def insere_produto(produto: Produto):
-    #     try:
-    #         con = cx_Oracle.connect("SYSTEM/123456@127.0.0.1:1521/xe")
-    #         cur = con.cursor() 
-    #         cur.arraysize = 100 
-    #         cur.execute('select * from produto')
+        id_produto = int(
+            input("\nInforme o código(id) do produto que irá EXCLUIR: "))
 
-    #         res = cur.fetchall() 
-    #         print(f"Res: ${res}")
-    #         # uncomment to display the query results 
-    #         cur.close()  
-    #         con.close()
+        try:
+            oracle = OracleQueries(can_write=True)
+            oracle.connect()
 
-    #     except Exception as error:
-    #         print(f"[OPS] - Erro ao inserir produto: {error}")
+            if self.existe_produto(oracle, id_produto):
+                oracle.write(f"DELETE FROM produto WHERE id = {id_produto}")
 
-        # cursor.execute("INSERT INTO PRODUTO (nome, descricao, quantidade, categoria, preco_unitario, quantidade_reposicao) VALUES (:nome, :descricao, :quantidade, :categoria, :preco_unitario, :quantidade_reposicao);")
+                print("Produto EXCLUÍDO com sucesso!")
 
-    # def seleciona_todos_produto():
-    #     oracle = oracle_queries()
-    #     cursor = oracle.connect()
+            else:
+                print(f"Não existe nenhum produto com o código(id): {id_produto}")
+
+        except Exception as error:
+            print(f"Erro ao excluir produto: {error}")

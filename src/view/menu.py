@@ -1,10 +1,10 @@
 def menu_principal():
     return(
-    """"
+    """
     =-=-=-=-=-=-=-=-=-=-=-=-= MENU PRINCIPAL =-=-=-=-=-=-=-=-=-=-=-=-=
         [1] - Relatórios
         [2] - Inserir Registros
-        [3] - Atualizar Registros
+        [3] - Alterar Registros
         [4] - Remover Registros
         [0] - Sair
     """

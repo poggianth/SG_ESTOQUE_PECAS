@@ -1,1 +1,0 @@
-select SUM(preco_unitario * quantidade) as "Soma" from produto

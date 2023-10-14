@@ -1,13 +1,12 @@
-import os
-import time
 from view.splash_screen import SplashScreen
 from view import menu
 from reports.relatorios import Relatorio
-from controller.controller_produto import controller_produto
+from controller.controller_produto import Controller_Produto
 
 
 tela_inicial = SplashScreen()
 relatorio = Relatorio()
+controller_produto = Controller_Produto()
 
 
 def reports(opcao_relatorio):
@@ -26,8 +25,64 @@ def reports(opcao_relatorio):
         relatorio.get_item__todos_itens()
     elif opcao_relatorio == 7:
         relatorio.get_item_localizacao_produto_especifico()
+    elif opcao_relatorio == 0:
+        print("Voltando ao menu pricipal!")
     else:
         print("[ERRO] - Opção inválida!")
+
+
+def inserir(opcao_inserir):
+    if opcao_inserir == 1:
+        print("------------- Inserir estoque -------------")
+
+    elif opcao_inserir == 2:
+        print("------------- Inserir produto -------------")
+        controller_produto.inserir_produto()        
+        
+    elif opcao_inserir == 3:
+        print("------------- Inserir item -------------")
+
+    elif opcao_inserir == 0:
+        print("Voltando ao menu pricipal!")
+
+    else:
+        print("[OPS] - Opçao inválida!")
+
+
+def alterar(opcao_alterar):
+    if opcao_alterar == 1:
+        print("------------- Alterar estoque -------------")
+
+    elif opcao_alterar == 2:
+        print("------------- Alterar produto -------------")
+        controller_produto.alterar_produto()       
+        
+    elif opcao_alterar == 3:
+        print("------------- Alterar item -------------")
+
+    elif opcao_alterar == 0:
+        print("Voltando ao menu pricipal!")
+
+    else:
+        print("[OPS] - Opçao inválida!")
+
+
+def excluir(opcao_excluir):
+    if opcao_excluir == 1:
+        print("------------- Excluir estoque -------------")
+
+    elif opcao_excluir == 2:
+        print("------------- Excluir produto -------------")
+        controller_produto.excluir_produto()              
+        
+    elif opcao_excluir == 3:
+        print("------------- Excluir item -------------")
+
+    elif opcao_excluir == 0:
+        print("Voltando ao menu pricipal!")
+
+    else:
+        print("[OPS] - Opçao inválida!")
 
 # Main
 def run():
@@ -48,16 +103,26 @@ def run():
             
             elif opcao == 2: # Inserir Novos Registros
                 print(menu.menu_entidades())
+                opcao_inserir = int(input("Informe a entidade para inserir: "))
 
-            elif opcao == 3: # Atualizar Registros
+                inserir(opcao_inserir)               
+
+            elif opcao == 3: # Alterar Registros
                 print(menu.menu_entidades())
+                opcao_alterar = int(input("Informe a entidade para alterar: "))
+
+                alterar(opcao_alterar)
 
             elif opcao == 4: # Excluir
-                print("Escolheu a opção 4")
+                print(menu.menu_entidades())
+                opcao_excluir = int(input("Informe a entidade para excluir: "))
+
+                excluir (opcao_excluir)
 
             elif opcao == 0:
                 print("Saindo...")
                 print("Agradecemos por utilizar o nosso sistema!")
+                menu.clear_console()
                 exit(0)
 
             else:
