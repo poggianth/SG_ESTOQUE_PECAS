@@ -56,9 +56,14 @@ def clear_console(wait_time:int=3):
        wait_time: argumento de entrada que indica o tempo de espera
     '''
     import os
+    import platform
     from time import sleep
     sleep(wait_time)
-    # Limpar console no LINUX:
-        # os.system("clear")
-    # Limpar console no WINDOWS:
-    os.system("cls")
+
+    # retorno de plataform.system() de acordo com o link: https://github.com/python/cpython/blob/356997cccc21a3391175d20e9ef03d434675b496/Lib/platform.py#L906-L913
+    sistem_operational = platform.system()
+
+    if sistem_operational == "Windows":
+        os.system("cls")
+    else:
+        os.system("clear")

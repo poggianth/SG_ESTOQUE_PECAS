@@ -100,7 +100,7 @@ class OracleQueries:
 
     def write(self, query:str):
         if not self.can_write:
-            raise Exception('Can\'t write using this connection')
+            raise Exception("Can't write using this connection")
 
         self.cur.execute(query)
         self.conn.commit()
