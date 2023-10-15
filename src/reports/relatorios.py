@@ -8,17 +8,53 @@ class Relatorio:
         query_produto_todos_produtos = "SELECT * FROM produto ORDER BY (id)"
 
         print("\n")
-        print(oracle.sqlToDataFrame(query_produto_todos_produtos))
-        input("\nPressione Enter para Sair do Relatório de Produtos ")
+
+        result = oracle.sqlToDataFrame(query_produto_todos_produtos)
+        
+        if result.empty:
+            print("Não existe nenhum produto cadastrado!")
+            input("\nPressione Enter para Sair do Relatório de Produtos ")
+
+            return False
+        else:
+            print(result)
+            input("\nPressione Enter para Sair do Relatório de Produtos ")
+
+            return True
+
     
     
     def get_produto_valor_total(self):
         oracle = OracleQueries()
         oracle.connect()
-        query_produto_valor_total = """SELECT SUM(preco_unitario * quantidade) as "Soma" FROM produto ORDER BY (id)"""
+        query_produto_valor_total = """
+            SELECT
+                ID AS Produto_ID,
+                NOME AS Produto_Nome,
+                QUANTIDADE AS Quantidade,
+                PRECO_UNITARIO AS Preco_Unitario,
+                QUANTIDADE * PRECO_UNITARIO AS ValorTotalPorProduto
+            FROM
+                Produto
+            UNION ALL
+            SELECT
+                NULL AS Produto_ID,
+                'Total Geral' AS Produto_Nome,
+                NULL AS Quantidade,
+                NULL AS Preco_Unitario,
+                SUM(QUANTIDADE * PRECO_UNITARIO) AS ValorTotalGeral
+            FROM
+                Produto
+        """
         
         print("\n")
-        print(oracle.sqlToDataFrame(query_produto_valor_total))
+
+        result = oracle.sqlToDataFrame(query_produto_valor_total)
+        if result.empty:
+            print("Não existe nenhum produto cadastrado!")
+        else:
+            print(result)
+
         input("\nPressione Enter para Sair do Relatório de Produtos ")
 
     
@@ -28,7 +64,13 @@ class Relatorio:
         query_produto_reposicao = "SELECT * FROM produto where quantidade <= quantidade_reposicao ORDER BY (id)"
 
         print("\n")
-        print(oracle.sqlToDataFrame(query_produto_reposicao))
+        result = oracle.sqlToDataFrame(query_produto_reposicao)
+        
+        if result.empty:
+            print("Nenhum produto precisa de reposição! :)")
+        else:
+            print(result)
+
         input("\nPressione Enter para Sair do Relatório de Produtos ")
     
     
@@ -38,8 +80,20 @@ class Relatorio:
         query_estoque_todos_estoques = "SELECT * FROM estoque ORDER BY (id)"
 
         print("\n")
-        print(oracle.sqlToDataFrame(query_estoque_todos_estoques))
-        input("\nPressione Enter para sair do Relatório de Estoque ")
+        result = oracle.sqlToDataFrame(query_estoque_todos_estoques)
+        
+        if result.empty:
+            print("Não existe nenhum estoque cadastrado!")
+            input("\nPressione Enter para sair do Relatório de Estoque ")
+            
+            return False
+        
+        else:
+            print(result)
+            input("\nPressione Enter para sair do Relatório de Estoque ")
+            
+            return True
+
         
     
     def get_estoque_produto_em_estoque_especifico(self):
@@ -56,7 +110,13 @@ class Relatorio:
             """
 
         print("\n")
-        print(oracle.sqlToDataFrame(query_estoque_produto_em_estoque_especifico.format(id_estoque = id_estoque)))
+        result = oracle.sqlToDataFrame(query_estoque_produto_em_estoque_especifico)
+
+        if result.empty:
+            print(f"Não existe nenhum produto no estoque ({id_estoque})")
+        else:
+            print(result)
+        
         input("\nPressione Enter para sair do Relatório de Estoque ")
 
     
@@ -66,8 +126,18 @@ class Relatorio:
         query_item__todos_itens = "SELECT * FROM item_estoque ORDER BY (id)"
 
         print("\n")
-        print(oracle.sqlToDataFrame(query_item__todos_itens))
-        input("\nPressione Enter para sair do Relatório de Itens ")
+        result = oracle.sqlToDataFrame(query_item__todos_itens)
+        
+        if result.empty:
+            print("Não existe nenhum item_estoque cadastrado!")
+            input("\nPressione Enter para sair do Relatório de Itens ")
+            
+            return False
+        else:
+            print(result)
+            input("\nPressione Enter para sair do Relatório de Itens ")
+            
+            return True
 
     
     def get_item_localizacao_produto_especifico(self):
@@ -75,7 +145,7 @@ class Relatorio:
 
         oracle = OracleQueries()
         oracle.connect()
-        query_item_localizacao_produto_especifico = """
+        query_item_localizacao_produto_especifico = f"""
             SELECT distinct p.id, p.nome, p.descricao, i.estante, i.prateleira
             FROM produto p
             INNER JOIN item_estoque i
@@ -84,5 +154,13 @@ class Relatorio:
             """
 
         print("\n")
-        print(oracle.sqlToDataFrame(query_item_localizacao_produto_especifico.format(id_produto=id_produto)))
+
+        result = oracle.sqlToDataFrame(query_item_localizacao_produto_especifico)
+
+        if result.empty:
+            print(f"O produto({id_produto}) não está em nenhum estoque!")
+        else:
+            print(result)
+        
+            
         input("\nPressione Enter para sair do Relatório de Itens ")

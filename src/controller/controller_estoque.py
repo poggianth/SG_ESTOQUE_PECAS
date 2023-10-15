@@ -29,58 +29,62 @@ class Controller_Estoque:
 
     def alterar_estoque(self):
         # Mostra os estoques cadastrados para guiar o usuário
-        relatorio.get_estoque_todos_estoques()
+        if relatorio.get_estoque_todos_estoques():
 
-        id_estoque_alterar = int(input("\nInforme o código(id) do estoque que irá ALTERAR: "))
+            id_estoque_alterar = int(input("\nInforme o código(id) do estoque que irá ALTERAR: "))
 
-        try:
-            oracle = OracleQueries(can_write=True)
-            oracle.connect()
+            try:
+                oracle = OracleQueries(can_write=True)
+                oracle.connect()
 
-            if self.existe_estoque(oracle, id_estoque_alterar):
-                # Estoque existe
-                tipo_estoque_novo = input("Informe o (NOVO) tipo: ")
+                if self.existe_estoque(oracle, id_estoque_alterar):
+                    # Estoque existe
+                    tipo_estoque_novo = input("Informe o (NOVO) tipo: ")
 
-                oracle.write(f"UPDATE ESTOQUE SET tipo = '{tipo_estoque_novo}' WHERE id = {id_estoque_alterar}")
+                    oracle.write(f"UPDATE ESTOQUE SET tipo = '{tipo_estoque_novo}' WHERE id = {id_estoque_alterar}")
 
-                oracle.conn.commit()
-                print(f"Estoque({id_estoque_alterar}) alterado com sucesso!")
-            
-            else:
-                print(f"Não existe nenhum estoque com o código(id) = {id_estoque_alterar}")
+                    oracle.conn.commit()
+                    print(f"Estoque({id_estoque_alterar}) alterado com sucesso!")
+                
+                else:
+                    print(f"Não existe nenhum estoque com o código(id) = {id_estoque_alterar}")
 
-        except Exception as error:
+            except Exception as error:
 
-            print(f"[OPS] - Erro ao atualizar estoque: {error}")
+                print(f"[OPS] - Erro ao atualizar estoque: {error}")
+        else:
+            print("Não existe nenhum estoque cadastrado para ALTERAR! Cadastre pelo menos 1")
     
     def excluir_estoque(self):
         # Mostra os estoques cadastrados para guiar o usuário
-        relatorio.get_estoque_todos_estoques()
+        if relatorio.get_estoque_todos_estoques():
 
-        id_estoque_excluir = int(input("\nInforme o código(id) do estoque que irá EXCLUIR: "))
+            id_estoque_excluir = int(input("\nInforme o código(id) do estoque que irá EXCLUIR: "))
 
-        try:
-            oracle = OracleQueries(can_write=True)
-            oracle.connect()
+            try:
+                oracle = OracleQueries(can_write=True)
+                oracle.connect()
 
-            if self.existe_estoque(oracle, id_estoque_excluir):
-                if self.existe_itens_dependentes(oracle, id_estoque_excluir):
-                    self.excluir_itens_dependentes(oracle, id_estoque_excluir)
+                if self.existe_estoque(oracle, id_estoque_excluir):
+                    if self.existe_itens_dependentes(oracle, id_estoque_excluir):
+                        self.excluir_itens_dependentes(oracle, id_estoque_excluir)
 
-                    oracle.write(f"DELETE FROM estoque WHERE id={id_estoque_excluir}")
+                        oracle.write(f"DELETE FROM estoque WHERE id={id_estoque_excluir}")
 
-                    print(f"Estoque({id_estoque_excluir}) excluído com sucesso!")
+                        print(f"Estoque({id_estoque_excluir}) excluído com sucesso!")
+                    else:
+                        oracle.write(f"DELETE FROM estoque WHERE id={id_estoque_excluir}")
+        
+                        oracle.conn.commit()
+                        print(f"Estoque({id_estoque_excluir}) excluído com sucesso!")
                 else:
-                    oracle.write(f"DELETE FROM estoque WHERE id={id_estoque_excluir}")
-    
-                    oracle.conn.commit()
-                    print(f"Estoque({id_estoque_excluir}) excluído com sucesso!")
-            else:
-                print(f"Não existe nenhum estoque com o código(id) = {id_estoque_excluir}")
+                    print(f"Não existe nenhum estoque com o código(id) = {id_estoque_excluir}")
 
 
-        except Exception as error:
-            print(f"[OPS] - Erro ao excluir estoque: ${error}")
+            except Exception as error:
+                print(f"[OPS] - Erro ao excluir estoque: ${error}")
+        else:
+            print("Não existe nenhum estoque cadastrado para EXCLUIR! Cadastre pelo menos 1")
 
     def existe_itens_dependentes(self, oracle: OracleQueries, id_estoque: int):
         result = oracle.sqlToDataFrame(f"SELECT id FROM item_estoque WHERE id_estoque={id_estoque}")

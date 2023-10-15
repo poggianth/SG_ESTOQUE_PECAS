@@ -3,12 +3,14 @@ from view import menu
 from reports.relatorios import Relatorio
 from controller.controller_produto import Controller_Produto
 from controller.controller_estoque import Controller_Estoque
+from controller.controller_item_estoque import Controller_Item_Estoque
 
 
 tela_inicial = SplashScreen()
 relatorio = Relatorio()
 controller_produto = Controller_Produto()
 controller_estoque = Controller_Estoque()
+controller_item_estoque = Controller_Item_Estoque()
 
 
 def reports(opcao_relatorio):
@@ -44,6 +46,8 @@ def inserir(opcao_inserir):
         
     elif opcao_inserir == 3:
         print("------------- Inserir item -------------")
+        controller_item_estoque.inserir_item_estoque()
+        
 
     elif opcao_inserir == 0:
         print("Voltando ao menu pricipal!")
@@ -63,6 +67,7 @@ def alterar(opcao_alterar):
         
     elif opcao_alterar == 3:
         print("------------- Alterar item -------------")
+        controller_item_estoque.alterar_item_estoque()
 
     elif opcao_alterar == 0:
         print("Voltando ao menu pricipal!")
@@ -82,6 +87,7 @@ def excluir(opcao_excluir):
         
     elif opcao_excluir == 3:
         print("------------- Excluir item -------------")
+        controller_item_estoque.excluir_item_estoque()
 
     elif opcao_excluir == 0:
         print("Voltando ao menu pricipal!")
