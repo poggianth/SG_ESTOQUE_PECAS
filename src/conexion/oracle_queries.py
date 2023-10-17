@@ -11,8 +11,8 @@ class OracleQueries:
         self.service_name = 'SG_ESTOQUE_PECAS'
         self.sid = 'xe'
         self.cur = None
-        self.user = "SYSTEM"
-        self.passwd = "123456"
+        self.user = "labdatabase"
+        self.passwd = "labDatabase2022"
 
         # with open("/src/conexion/passphrase/authentication.oracle", "r") as f:
         #     self.user, self.passwd = f.read().split(',')            
