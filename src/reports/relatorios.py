@@ -17,6 +17,7 @@ class Relatorio:
 
             return False
         else:
+            print("Produtos cadastrados: ")
             print(result)
             input("\nPressione Enter para Sair do Relatório de Produtos ")
 
@@ -89,6 +90,7 @@ class Relatorio:
             return False
         
         else:
+            print("Estoques cadastrados: ")
             print(result)
             input("\nPressione Enter para sair do Relatório de Estoque ")
             
@@ -134,6 +136,7 @@ class Relatorio:
             
             return False
         else:
+            print("Produtos armazenados: ")
             print(result)
             input("\nPressione Enter para sair do Relatório de Itens ")
             

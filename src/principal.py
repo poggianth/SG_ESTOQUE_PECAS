@@ -97,11 +97,11 @@ def excluir(opcao_excluir):
 
 # Main
 def run():
-    print(tela_inicial.get_updated_screen())
-    menu.clear_console()
-
     while True:
         try:
+            print(tela_inicial.get_updated_screen())
+            menu.clear_console()
+
             print(menu.menu_principal())
             opcao = int(input("Informe a sua opção: "))
             menu.clear_console(1)

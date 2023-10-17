@@ -24,6 +24,15 @@ class Controller_Estoque:
             oracle.conn.commit()
             print("\nEstoque inserido com sucesso!")
 
+
+            print("""\nDeseja inserir um novo estoque?
+              [1] - Sim
+              [0] - Não""")
+            opcao_novamente = int(input("Informe sua opção: "))
+            
+            if opcao_novamente == 1:
+                self.inserir_estoque()
+
         except Exception as error:
             print(f"[OPS] - Erro ao inserir estoque: {error}")
 
@@ -45,6 +54,15 @@ class Controller_Estoque:
 
                     oracle.conn.commit()
                     print(f"Estoque({id_estoque_alterar}) alterado com sucesso!")
+
+
+                    print("""\nDeseja alterar um novo estoque?
+                    [1] - Sim
+                    [0] - Não""")
+                    opcao_novamente = int(input("Informe sua opção: "))
+                    
+                    if opcao_novamente == 1:
+                        self.alterar_estoque()    
                 
                 else:
                     print(f"Não existe nenhum estoque com o código(id) = {id_estoque_alterar}")
@@ -60,29 +78,37 @@ class Controller_Estoque:
         if relatorio.get_estoque_todos_estoques():
 
             id_estoque_excluir = int(input("\nInforme o código(id) do estoque que irá EXCLUIR: "))
-
             try:
                 oracle = OracleQueries(can_write=True)
                 oracle.connect()
 
                 if self.existe_estoque(oracle, id_estoque_excluir):
-                    if self.existe_itens_dependentes(oracle, id_estoque_excluir):
-                        self.excluir_itens_dependentes(oracle, id_estoque_excluir)
+                    print("""\nTem certeza que deseja excluir o estoque selecionado?
+                    [1] - Sim
+                    [0] - Não""")
+                    opcao_certeza = int(input("Informe sua opção: "))
+                    
+                    if opcao_certeza == 1:
+                        if self.existe_itens_dependentes(oracle, id_estoque_excluir):
+                                self.excluir_itens_dependentes(oracle, id_estoque_excluir)
 
-                        oracle.write(f"DELETE FROM estoque WHERE id={id_estoque_excluir}")
+                                oracle.write(f"DELETE FROM estoque WHERE id={id_estoque_excluir}")
 
-                        print(f"Estoque({id_estoque_excluir}) excluído com sucesso!")
+                                print(f"Estoque({id_estoque_excluir}) excluído com sucesso!")
+                        else:
+                            oracle.write(f"DELETE FROM estoque WHERE id={id_estoque_excluir}")
+            
+                            oracle.conn.commit()
+                            print(f"Estoque({id_estoque_excluir}) excluído com sucesso!")
                     else:
-                        oracle.write(f"DELETE FROM estoque WHERE id={id_estoque_excluir}")
-        
-                        oracle.conn.commit()
-                        print(f"Estoque({id_estoque_excluir}) excluído com sucesso!")
+                        print("Operação de exclusão cancelada com sucesso!")
                 else:
                     print(f"Não existe nenhum estoque com o código(id) = {id_estoque_excluir}")
 
 
             except Exception as error:
                 print(f"[OPS] - Erro ao excluir estoque: ${error}")
+
         else:
             print("Não existe nenhum estoque cadastrado para EXCLUIR! Cadastre pelo menos 1")
 

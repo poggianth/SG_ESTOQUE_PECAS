@@ -30,6 +30,14 @@ class Controller_Item_Estoque:
 
                             oracle.conn.commit()
                             print("\nProduto armazenado com sucesso!")
+
+                            print("""\nDeseja armazenar mais um produto?
+                                    [1] - Sim
+                                    [0] - Não""")
+                            opcao_novamente = int(input("Informe sua opção: "))
+                            
+                            if opcao_novamente == 1:
+                                self.inserir_item_estoque()
                             
                         else:
                             print(f"[OPS] - Não existe nenhum estoque com o código(id) = {id_estoque}")
@@ -43,6 +51,7 @@ class Controller_Item_Estoque:
             print(f"[OPS] - Erro ao armazenar produto: {error}")
 
     def alterar_item_estoque(self):
+        # Mostra os itens_armazenados para guiar o usuário
         if relatorio.get_item__todos_itens():
             id_item_estoque = int(input("Informe o código(id) do item_produto que deseja alterar: "))
 
@@ -71,6 +80,14 @@ class Controller_Item_Estoque:
 
                                     oracle.conn.commit()
                                     print("\nLocalização do produto alterada com sucesso!")
+
+                                    print("""\nDeseja alterar a localização de mais um produto?
+                                    [1] - Sim
+                                    [0] - Não""")
+                                    opcao_novamente = int(input("Informe sua opção: "))
+                                    
+                                    if opcao_novamente == 1:
+                                        self.alterar_item_estoque()
                                     
                                 else:
                                     print(f"[OPS] - Não existe nenhum estoque com o código(id) = {id_estoque}")
@@ -99,14 +116,24 @@ class Controller_Item_Estoque:
                 oracle.connect()
 
                 if self.existe_item_estoque(oracle, id_item_estoque):
-                    oracle.write(f"DELETE FROM item_estoque WHERE id = {id_item_estoque}")
+                    print("""\nTem certeza que deseja excluir o item_estoque selecionado?
+                    [1] - Sim
+                    [0] - Não""")
+                    opcao_certeza = int(input("Informe sua opção: "))
+                    
+                    if opcao_certeza == 1:
+                        oracle.write(f"DELETE FROM item_estoque WHERE id = {id_item_estoque}")
 
-                    oracle.conn.commit()
-                    print(f"Item_estoque({id_item_estoque}) excluído com sucesso!")
+                        oracle.conn.commit()
+                        print(f"Item_estoque({id_item_estoque}) excluído com sucesso!")
+                    else:
+                        print("Operação de exclusão cancelada com sucesso!")
                 else:
                     print(f"Não existe nenhum item_estoque com o código = {id_item_estoque}")
             except Exception as error:
                 print(f"[OPS] - Erro ao excluir item_estoque: {error}")
+            
+
         else:
             print("Não existe nenhum produto armazenado para ALTERAR! Armazene pelo menos 1")
     

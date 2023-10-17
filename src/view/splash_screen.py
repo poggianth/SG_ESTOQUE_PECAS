@@ -14,7 +14,7 @@ class SplashScreen:
                     THIAGO MELO"""
         self.professor = "Prof. M.Sc. Howard Roatti"
         self.disciplina = "Banco de Dados"
-        self.semestre = "2022/2"
+        self.semestre = "2023/2"
         
     def get_total_estoque(self):
         oracle = OracleQueries()

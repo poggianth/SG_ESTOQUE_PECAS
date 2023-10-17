@@ -35,6 +35,14 @@ class Controller_Produto:
             oracle.conn.commit()
             print("\nProduto inserido com sucesso!")
 
+            print("""\nDeseja inserir um novo produto?
+              [1] - Sim
+              [0] - Não""")
+            opcao_novamente = int(input("Informe sua opção: "))
+            
+            if opcao_novamente == 1:
+                self.inserir_produto()
+
         except Exception as error:
             print(f"[OPS] - Erro ao inserir produto: {error}")
 
@@ -70,6 +78,14 @@ class Controller_Produto:
                     oracle.conn.commit()
                     print(f"Produto({id_produto_alterar}) alterado com sucesso!")
 
+                    print("""\nDeseja alterar mais um produto?
+                    [1] - Sim
+                    [0] - Não""")
+                    opcao_novamente = int(input("Informe sua opção: "))
+                    
+                    if opcao_novamente == 1:
+                        self.alterar_produto()
+
                 else:
                     print(f"Não existe nenhum produto com o código(id): {id_produto_alterar}")
                 
@@ -86,30 +102,37 @@ class Controller_Produto:
 
             id_produto_excluir = int(
                 input("\nInforme o código(id) do produto que irá EXCLUIR: "))
-
+            
             try:
                 oracle = OracleQueries(can_write=True)
                 oracle.connect()
 
                 if self.existe_produto(oracle, id_produto_excluir):
-                    if self.existe_itens_dependentes(oracle, id_produto_excluir):
-                        self.excluir_itens_dependentes(oracle, id_produto_excluir)
-                        
-                        oracle.write(f"DELETE FROM produto WHERE id = {id_produto_excluir}")
-                        
-                        oracle.conn.commit()
-                        print(f"Produto({id_produto_excluir}) excluído com sucesso!")
+                    print("""\nTem certeza que deseja excluir o produto selecionado?
+                    [1] - Sim
+                    [0] - Não""")
+                    opcao_certeza = int(input("Informe sua opção: "))
+                    
+                    if opcao_certeza == 1:
+                        if self.existe_itens_dependentes(oracle, id_produto_excluir):
+                            self.excluir_itens_dependentes(oracle, id_produto_excluir)
+                            
+                            oracle.write(f"DELETE FROM produto WHERE id = {id_produto_excluir}")
+                            
+                            oracle.conn.commit()
+                            print(f"Produto({id_produto_excluir}) excluído com sucesso!")
+                        else:
+                            oracle.write(f"DELETE FROM produto WHERE id = {id_produto_excluir}")
+                            
+                            print(f"Produto({id_produto_excluir}) excluído com sucesso!")
                     else:
-                        oracle.write(f"DELETE FROM produto WHERE id = {id_produto_excluir}")
-                        
-                        print(f"Produto({id_produto_excluir}) excluído com sucesso!")
-
+                        print("Operação de exclusão cancelada com sucesso!")
                 else:
                     print(f"Não existe nenhum produto com o código(id): {id_produto_excluir}")
 
-
             except Exception as error:
                 print(f"[OPS] - Erro ao excluir produto: {error}")
+            
         else:
             print("Não existe nenhum produto cadastrado para EXCLUIR! Cadastre pelo menos 1")
     
