@@ -31,3 +31,5 @@ Sinta-se à vontade para contribuir para este projeto, reportar problemas ou pro
 Este projeto é licenciado sob a [Licença MIT](LICENSE). Sinta-se à vontade para usá-lo conforme necessário.
 
 Este README fornece informações claras sobre os requisitos, como configurar o banco de dados Oracle e como executar o programa "principal.py" para usar o projeto de gerenciamento de estoque. Certifique-se de que todas as informações estejam atualizadas de acordo com a sua configuração específica.
+
+Link do vídeo de demonstração: https://youtu.be/OCdngsDYPK0
