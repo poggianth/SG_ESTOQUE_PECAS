@@ -32,6 +32,10 @@ def generate_records(query_sql:str):
 
 def run():
     query_create_tables = """
+        DROP TABLE item_estoque;
+        DROP TABLE estoque;
+        DROP TABLE produto;
+
         CREATE TABLE estoque (id NUMERIC GENERATED ALWAYS AS IDENTITY PRIMARY KEY, tipo VARCHAR(45) NOT NULL);
 
         CREATE TABLE produto (
